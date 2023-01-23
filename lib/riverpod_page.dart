@@ -12,14 +12,11 @@ final minutesProvider = StateProvider((ref) => 0);
 final secondsProvider = StateProvider((ref) => 0);
 final recordListProvider = StateProvider((ref) => <Lap>[]);
 
-class RiverpodPage extends ConsumerWidget {
+class RiverpodPage extends StatelessWidget {
   const RiverpodPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final hours = ref.watch(hoursProvider);
-    final minutes = ref.watch(minutesProvider);
-    final seconds = ref.watch(secondsProvider);
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Rebuild Sample')),
       body: CustomScrollView(
@@ -29,38 +26,38 @@ class RiverpodPage extends ConsumerWidget {
             sliver: SliverToBoxAdapter(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 32),
-                  const Center(child: SimpleClock()),
-                  const SizedBox(height: 60),
-                  const Text(
+                children: const [
+                  SizedBox(height: 32),
+                  Center(child: SimpleClock()),
+                  SizedBox(height: 60),
+                  Text(
                     'HOURS',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 8),
-                  SimpleBar(value: hours, maxValue: 12, color: Colors.purple),
-                  const SizedBox(height: 24),
-                  const Text(
+                  SizedBox(height: 8),
+                  HoursBar(),
+                  SizedBox(height: 24),
+                  Text(
                     'MINUTES',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 8),
-                  SimpleBar(value: minutes, maxValue: 60, color: Colors.teal),
-                  const SizedBox(height: 24),
-                  const Text(
+                  SizedBox(height: 8),
+                  MinutesBar(),
+                  SizedBox(height: 24),
+                  Text(
                     'SECONDS',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 8),
-                  SimpleBar(value: seconds, maxValue: 60, color: Colors.green),
-                  const SizedBox(height: 20),
-                  const Divider(),
-                  const SizedBox(height: 20),
-                  const Text(
+                  SizedBox(height: 8),
+                  SecondsBar(),
+                  SizedBox(height: 20),
+                  Divider(),
+                  SizedBox(height: 20),
+                  Text(
                     'LAP',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
                 ],
               ),
             ),
@@ -100,7 +97,7 @@ class SimpleClock extends HookConsumerWidget {
 
         if (minutesState.value != minutes) {
           minutesState.value = minutes;
-          ref.read(minutesProvider.notifier).state = hours;
+          ref.read(minutesProvider.notifier).state = minutes;
         }
 
         if (secondsState.value != seconds) {
@@ -194,6 +191,36 @@ class SimpleBar extends StatelessWidget {
         color: color,
       );
     });
+  }
+}
+
+class HoursBar extends ConsumerWidget {
+  const HoursBar({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hours = ref.watch(hoursProvider);
+    return SimpleBar(value: hours, maxValue: 12, color: Colors.purple);
+  }
+}
+
+class MinutesBar extends ConsumerWidget {
+  const MinutesBar({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final minutes = ref.watch(minutesProvider);
+    return SimpleBar(value: minutes, maxValue: 60, color: Colors.teal);
+  }
+}
+
+class SecondsBar extends ConsumerWidget {
+  const SecondsBar({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final seconds = ref.watch(secondsProvider);
+    return SimpleBar(value: seconds, maxValue: 60, color: Colors.green);
   }
 }
 
